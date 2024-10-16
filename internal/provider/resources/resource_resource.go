@@ -3,6 +3,8 @@ package resources
 import (
 	"context"
 	"fmt"
+
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
@@ -14,8 +16,9 @@ import (
 
 // Ensure the implementation satisfies the expected interfaces.
 var (
-	_ resource.Resource              = &ResourceResource{}
-	_ resource.ResourceWithConfigure = &ResourceResource{}
+	_ resource.Resource                = &ResourceResource{}
+	_ resource.ResourceWithConfigure   = &ResourceResource{}
+	_ resource.ResourceWithImportState = &ResourceResource{}
 )
 
 // NewResourceResource is a helper function to simplify the provider implementation.
@@ -253,4 +256,8 @@ func (r *ResourceResource) Delete(ctx context.Context, req resource.DeleteReques
 		return
 	}
 
+}
+
+func (r *ResourceResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }

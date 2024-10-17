@@ -304,3 +304,49 @@ func TestResources(t *testing.T) {
 		},
 	})
 }
+
+func TestResourceImport(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		Steps: []resource.TestStep{
+			// Initial creation of the resource
+			{
+				Config: providerConfig +
+					`resource "permitio_resource" "document" {
+						key		 = "document"
+						name	 = "document"
+						description = "a new document"
+						actions = {
+								"read" = {
+									"name" = "read"
+								}
+								"write" = {		
+									"name" = "write"
+								}
+						}
+						attributes = {
+							"created_at" = {
+								"description" = "creation time of the document"
+							  	"type"        = "time"
+							}
+						}
+					}`,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					// Document Resource tests
+					resource.TestCheckResourceAttr("permitio_resource.document", "key", "document"),
+					resource.TestCheckResourceAttr("permitio_resource.document", "name", "document"),
+					resource.TestCheckResourceAttr("permitio_resource.document", "description", "a new document"),
+					resource.TestCheckResourceAttr("permitio_resource.document", "actions.read.name", "read"),
+					resource.TestCheckResourceAttr("permitio_resource.document", "attributes.created_at.type", "time"),
+					resource.TestCheckResourceAttr("permitio_resource.document", "attributes.created_at.description", "creation time of the document"),
+				),
+			},
+			// Import testing for the document resource
+			{
+				ResourceName:      "permitio_resource.document",
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+		},
+	})
+}

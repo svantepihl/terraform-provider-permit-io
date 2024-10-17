@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
@@ -16,9 +15,8 @@ import (
 
 // Ensure the implementation satisfies the expected interfaces.
 var (
-	_ resource.Resource                = &RoleResource{}
-	_ resource.ResourceWithConfigure   = &RoleResource{}
-	_ resource.ResourceWithImportState = &RoleResource{}
+	_ resource.Resource              = &RoleResource{}
+	_ resource.ResourceWithConfigure = &RoleResource{}
 )
 
 func NewRoleResource() resource.Resource {
@@ -159,8 +157,4 @@ func (r *RoleResource) Delete(ctx context.Context, request resource.DeleteReques
 		)
 		return
 	}
-}
-
-func (r *RoleResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }
